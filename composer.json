@@ -3,6 +3,7 @@
     "description": "gathers metrics of existing cbsiam school pages from google pagespeed api",
     "type": "project",
     "require": {
+		"php": "^7.0",
         "fabpot/goutte": "^3.2",
         "google/apiclient": "^2.1"
 
