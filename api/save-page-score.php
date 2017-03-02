@@ -3,12 +3,22 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $dataHelper = new CbsiamMetrics\DataHelper();
 
-$id = $_POST['id'] ?? null;
-$scoreData = [
-	'speedScore' => $_POST['speedScore'] ?? null,
-];
+$url = null;
+$scoreData = [];
+foreach ($_POST as $key => $val) {
+	if ($key === 'id') {
+		$url = $val;
+	} else {
+		$scoreData[$key] = $val;
+	}
+}
 
-$data = $dataHelper->savePageScoreData($id, $scoreData);
+if ($url !== null && count($scoreData) > 0) {
+	// we have key and values, add timestamp
+	$id = $url . ':' . time();
+}
+
+$data = $dataHelper->savePageScoreData($url, $id, $scoreData);
 
 header('Content-type: application/json');
 echo json_encode($data);

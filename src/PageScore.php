@@ -4,10 +4,15 @@ namespace CbsiamMetrics;
 
 class PageScore {
 	public $data;
-	public $url;
+	public $urlKey;
 
-	public function __construct($url, array $data) {
+	public function __construct(string $urlKey, array $data) {
 		$this->data = $data;
-		$this->url = $url;
+		$this->urlKey = $urlKey;
+	}
+
+	public function getTimestamp() {
+		$urlKey = explode(':', $this->urlKey);
+		return array_pop($urlKey);
 	}
 }

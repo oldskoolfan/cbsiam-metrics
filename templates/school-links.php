@@ -15,12 +15,25 @@ $pageScores = $dataHelper->getScoresForLinks();
 	<div id="collapse<?= $i ?>" class="collapse" role="tabpanel" aria-labelledby="heading<?= $i ?>">
 		<div class="card-block">
 			<table class="table table-bordered" style="table-layout: fixed">
-				<tr>
-					<td>Score (out of 100)</td>
-					<td data-key="speedScore">
-						<?= $pageScore->data['speedScore'] ?? 'No score computed yet' ?>
-					</td>
-				</tr>
+				<?php if (count($pageScore->scores) > 0): ?>
+					<?php foreach($pageScore->scores as $score): ?>
+					<tr>
+						<td>Score (out of 100)</td>
+						<td>
+							<span><?= $score->data['speedScore'] ?? 'No score computed yet' ?></span>
+							<span><?= date('n-j-Y h:i:s A', $score->getTimestamp()) ?></span>
+						</td>
+					</tr>
+					<?php endforeach;?>
+				<?php else: ?>
+					<tr style="display:none">
+						<td>Score (out of 100)</td>
+						<td>
+							<span></span>
+							<span></span>
+						</td>
+					</tr>
+				<?php endif; ?>
 			</table>
 			<button class="btn btn-primary">Get Latest Pagespeed Results</button>
 		</div>

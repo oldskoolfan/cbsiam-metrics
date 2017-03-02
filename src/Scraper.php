@@ -10,6 +10,6 @@ class Scraper extends Client {
 	const SCHOOL_URL = 'http://www.cbsiam.com/partner-list.html';
 
 	public function getSchoolListPage() {
-        return $this->request('GET', self::SCHOOL_URL);
-    }
+		return $this->request('GET', self::SCHOOL_URL);
+	}
 }

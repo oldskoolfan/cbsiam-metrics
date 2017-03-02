@@ -16,6 +16,7 @@
 
 	function PageScoreController(el) {
 		this.$el = $(el);
+		this.$table = this.$el.find('table');
 		this.url = this.$el.data('url');
 		this.$primaryBtn = this.$el.find('.btn-primary');
 		this.$primaryBtn.bind('click', {
@@ -44,17 +45,32 @@
 				return controller.storeScoreResults(controller.url, data);
 			})
 			.then((response) => {
+				return controller.updateDataTable(controller, response);
+			})
+			.catch((err) => {
+				$('#loading-icon').remove();
+				console.error(err);
+			});
+		},
+		updateDataTable: function (controller, response) {
+			return new Promise((resolve, reject) => {
 				$('#loading-icon').remove();
 				console.debug(response);
 				if (response.status == 0) {
-					for (let key in response.data) {
-						let val = response.data[key];
-						controller.$el.find('td[data-key=' + key + ']').html(val);
-					}
+					let $row = controller.$table.find('tr').
+						first().clone();
+					$row.find('span').first()
+						.html(response.data.speedScore)
+					.end()
+					.last()
+						.html(response.ts)
+					.end();
+					$row.show();
+					controller.$table.prepend($row);
+					resolve();
+				} else {
+					reject(response);
 				}
-			}).catch((err) => {
-				$('#loading-icon').remove();
-				console.error(err);
 			});
 		},
 		storeScoreResults: function (url, results) {

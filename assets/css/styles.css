@@ -1,0 +1,7 @@
+body {
+	padding: 2em 0;
+}
+
+table td:last-child span:last-child {
+	float: right;
+}

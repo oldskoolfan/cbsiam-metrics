@@ -7,10 +7,9 @@ use Predis\Client;
 class DataHelper {
 	public $redis;
 
-	public function __construct($host = 'localhost') {
+	public function __construct() {
 		try {
 			$client = new Client(getenv('REDIS_URL') ?? 'localhost');
-			$client->connect($host);
 			$this->redis = $client;
 		} catch (\Exception $ex) {
 			exit($ex->getMessage());
@@ -20,33 +19,53 @@ class DataHelper {
 	public function getScoresForLinks() {
 		try {
 			$links = $this->redis->smembers('schoolUrls');
-			$pageScores = [];
+			$linkIds = [];
+			$pages = [];
+
+			// get all keys for each school url
 			foreach ($links as $link) {
-				array_push($pageScores,
-					$score = new PageScore(
-						$link,
-						$this->redis->hGetAll($link)
-					)
-				);
+				$linkIds[$link] = $this->redis->sMembers($link);
 			}
 
-			return $pageScores;
+			// // get all data for each key
+			foreach ($linkIds as $link => $keyArray) {
+				// init page
+				$page = new Page($link);
+				foreach ($keyArray as $key) {
+					array_push($page->scores,
+						$score = new PageScore(
+							$key,
+							$this->redis->hGetAll($key)
+						)
+					);
+				}
+				array_push($pages, $page);
+			}
+
+			return $pages;
 		} catch (\Exception $ex) {
 			return false;
 		}
 	}
 
-	public function savePageScoreData($id, $scoreData) {
+	public function savePageScoreData($url, $id, $scoreData) {
 		try {
+			// save new url id
+			$this->redis->sAdd($url, $id);
+
 			foreach ($scoreData as $key => $data) {
 				if ($data !== null) {
-					$this->redis->hset($id, $key, $data);
+					$this->redis->hSet($id, $key, $data);
 				}
 			}
 
+			$data = $this->redis->hGetAll($id);
+			$pageScore = new PageScore($id, $data);
+
 			return [
+				'ts' => $pageScore->getTimestamp(),
 				'status' => 0,
-				'data' => $this->redis->hGetAll($id),
+				'data' => $pageScore->data,
 			];
 		} catch (\Exception $ex) {
 			return [
