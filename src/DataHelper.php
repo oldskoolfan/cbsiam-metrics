@@ -2,15 +2,17 @@
 
 namespace CbsiamMetrics;
 
+use Predis\Client;
+
 class DataHelper {
 	public $redis;
 
 	public function __construct($host = 'localhost') {
 		try {
-			$client = new \Redis();
+			$client = new Client(getenv('REDIS_URL') ?? 'localnost');
 			$client->connect($host);
 			$this->redis = $client;
-		} catch (\RedisException $ex) {
+		} catch (\Exception $ex) {
 			exit($ex->getMessage());
 		}
 	}
@@ -29,7 +31,7 @@ class DataHelper {
 			}
 
 			return $pageScores;
-		} catch (\RedisException $ex) {
+		} catch (\Exception $ex) {
 			return false;
 		}
 	}
@@ -46,7 +48,7 @@ class DataHelper {
 				'status' => 0,
 				'data' => $this->redis->hGetAll($id),
 			];
-		} catch (\RedisException $ex) {
+		} catch (\Exception $ex) {
 			return [
 				'status' => 1,
 				'error' => $ex->getMessage(),
