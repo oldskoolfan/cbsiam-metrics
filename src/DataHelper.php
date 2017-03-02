@@ -9,7 +9,7 @@ class DataHelper {
 
 	public function __construct($host = 'localhost') {
 		try {
-			$client = new Client(getenv('REDIS_URL') ?? 'localnost');
+			$client = new Client(getenv('REDIS_URL') ?? 'localhost');
 			$client->connect($host);
 			$this->redis = $client;
 		} catch (\Exception $ex) {
