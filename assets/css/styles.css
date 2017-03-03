@@ -1,0 +1,12 @@
+body {
+	padding: 2em 0;
+}
+
+table td:last-child > span:last-of-type {
+	float: right;
+}
+
+i.fa-close {
+	color: darkred;
+	cursor: pointer;
+}

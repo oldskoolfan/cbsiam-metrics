@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\ConnectException;
 use Symfony\Component\DomCrawler\Crawler;
 
 try {
-	$dataHelper = new DataHelper('localhost');
+	$dataHelper = new DataHelper();
 	$scraper = new Scraper();
 	$crawler = $scraper->getSchoolListPage();
 
