@@ -3,24 +3,24 @@
     "description": "gathers metrics of existing cbsiam school pages from google pagespeed api",
     "type": "project",
     "require": {
-		"php": "^7.0",
-		"predis/predis": "^1.1",
+        "php": "^7.0",
+        "predis/predis": "^1.1",
         "fabpot/goutte": "^3.2",
         "google/apiclient": "^2.1"
 
     },
-	"require-dev": {
-		"phpunit/phpunit": "^6.0"
-	},
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    },
     "authors": [
         {
             "name": "Andrew Harris",
             "email": "harris.1305@gmail.com"
         }
     ],
-	"autoload": {
-		"psr-4": {
-			"CbsiamMetrics\\": "src/"
-		}
-	}
+    "autoload": {
+        "psr-4": {
+            "CbsiamMetrics\\": "src/"
+        }
+    }
 }
