@@ -1,21 +1,30 @@
+/**
+ * @namespace cbsiamMetrics
+ * Init cbsiamMetrics namespace and pageScoreController class
+ */
 (function ($, factory) {
 	'use strict';
 
 	window.cbsiamMetrics = window.cbsiamMetrics || {};
 	$.extend(window.cbsiamMetrics, factory($));
 
+	/**
+	 * jQuery document.ready function - init pageScoreControllers and delete
+	 * button event handlers
+	 */
 	$(function() {
 		const DEL_SCORE_URL = '/api/delete-page-score.php';
 		let $pageScores = $('#page-scores'),
 			deleteScore = function () {
 				let $delBtn = $(this),
-					url = $delBtn.closest('.card').data('url'),
-					key = $delBtn.data('key'),
-					sure = confirm('Are you sure you want to delete this score?');
-				console.debug(key);
+				url = $delBtn.closest('.card').data('url'),
+				key = $delBtn.data('key'),
+				sure = confirm('Are you sure you want to delete this score?');
+
 				if (!sure) {
 					return false;
 				}
+
 				cbsiamMetrics.sendAjaxRequest(
 					DEL_SCORE_URL,
 					'POST',
@@ -38,6 +47,10 @@
 	const PAGESPEED_URL = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed';
 	const SAVE_SCORE_URL = '/api/save-page-score.php';
 
+	/**
+	 * @class
+	 * @param {DOMElement} el Dom element this controller is attached to
+	 */
 	function PageScoreController(el) {
 		this.$el = $(el);
 		this.$table = this.$el.find('table');
@@ -53,6 +66,11 @@
 	}
 
 	PageScoreController.prototype = {
+		/**
+		 * Call google pagespeed api, then call our api to persist data
+		 * @param  {Event} e
+		 * @return {void}
+		 */
 		getPageScore: function (e) {
 			let controller = e.data.controller,
 			icon = '<span id="loading-icon"><i class="fa fa-cog ' +
@@ -60,7 +78,7 @@
 
 			// throttling
 			if (controller.gettingScore) {
-				return false;
+				return;
 			}
 
 			controller.gettingScore = true;
@@ -88,6 +106,14 @@
 				console.error(err);
 			});
 		},
+
+		/**
+		 * Update the DOM to reflect changes we persisted; i.e. create a new
+		 * page score table row
+		 * @param  {PageScoreController} 	controller
+		 * @param  {object} response		response from save api
+		 * @return {Promise}
+		 */
 		updateDataTable: function (controller, response) {
 			return new Promise((resolve, reject) => {
 				let dateTime = moment.unix(response.ts)
@@ -116,13 +142,21 @@
 				$('#loading-icon').remove();
 			});
 		},
+
+		/**
+		 * Call our save api to persist page score data
+		 * @param  {string} url     school website url
+		 * @param  {object} results results from google pagespeed api
+		 * @return {Promise}
+		 */
 		storeScoreResults: function (url, results) {
 			let json = results,
-				speedScore = json.ruleGroups.SPEED.score,
-				postData = {
-					id: url,
-					speedScore: speedScore
-				};
+			speedScore = json.ruleGroups.SPEED.score,
+			postData = {
+				id: url,
+				speedScore: speedScore
+			};
+
 			return cbsiamMetrics.sendAjaxRequest(
 				SAVE_SCORE_URL,
 				'POST',

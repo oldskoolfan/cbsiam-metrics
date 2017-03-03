@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @api
+ *
+ * Delete a page score record based on url and key
+ *
+ * @param string key
+ * @param string url
+ */
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $dataHelper = new CbsiamMetrics\DataHelper();

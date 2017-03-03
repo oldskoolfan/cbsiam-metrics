@@ -1,12 +1,22 @@
+/**
+ * Init ajax helper function
+ */
 (function ($, factory) {
 	'use strict';
 	window.cbsiamMetrics = window.cbsiamMetrics || {};
 	$.extend(window.cbsiamMetrics, factory());
 })(jQuery, function () {
 	return {
+		/**
+		 * Generic ajax request helper function (for GET or POST)
+		 * @param  {string}	url    api url
+		 * @param  {string}	method GET or POST
+		 * @param  {object}	data
+		 * @return {Promise}
+		 */
 		sendAjaxRequest: function (url, method, data) {
 			let request = new XMLHttpRequest(),
-				dataString = '';
+			dataString = '';
 
 			if (data !== undefined) {
 				for (let key in data) {
