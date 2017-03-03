@@ -21,7 +21,10 @@ $pageScores = $dataHelper->getScoresForLinks();
 						<td>Score (out of 100)</td>
 						<td>
 							<span><?= $score->data['speedScore'] ?? 'No score computed yet' ?></span>
-							<span><?= date('n-j-Y h:i:s A', $score->getTimestamp()) ?></span>
+							<span>
+								<span class="dt"><?= date('n-j-Y h:i:s A', $score->getTimestamp()) ?></span>
+								<i data-key="<?= $score->urlKey ?>" class="fa fa-close fa-lg"></i>
+							</span>
 						</td>
 					</tr>
 					<?php endforeach;?>
@@ -30,7 +33,10 @@ $pageScores = $dataHelper->getScoresForLinks();
 						<td>Score (out of 100)</td>
 						<td>
 							<span></span>
-							<span></span>
+							<span>
+								<span class="dt"></span>
+								<i class="fa fa-close fa-lg"></i>
+							</span>
 						</td>
 					</tr>
 				<?php endif; ?>

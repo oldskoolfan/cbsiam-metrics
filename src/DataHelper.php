@@ -63,15 +63,32 @@ class DataHelper {
 			$pageScore = new PageScore($id, $data);
 
 			return [
+				'key' => $id,
 				'ts' => $pageScore->getTimestamp(),
 				'status' => 0,
 				'data' => $pageScore->data,
 			];
 		} catch (\Exception $ex) {
-			return [
-				'status' => 1,
-				'error' => $ex->getMessage(),
-			];
+			return $this->getErrorStatus($ex);
 		}
+	}
+
+	public function deleteScore($url, $key) {
+		try {
+			$this->redis->sRem($url, $key);
+			$this->redis->del($key);
+			return [
+				'status' => 0,
+			];
+		} catch (\Exception $ex) {
+			return $this->getErrorStatus($ex);
+		}
+	}
+
+	private function getErrorStatus($ex) {
+		return [
+			'status' => 1,
+			'error' => $ex->getMessage(),
+		];
 	}
 }

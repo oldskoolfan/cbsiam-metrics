@@ -1,13 +1,37 @@
 (function ($, factory) {
 	'use strict';
+
 	window.cbsiamMetrics = window.cbsiamMetrics || {};
 	$.extend(window.cbsiamMetrics, factory($));
 
 	$(function() {
-		let $pageScores = $('#page-scores');
+		const DEL_SCORE_URL = '/api/delete-page-score.php';
+		let $pageScores = $('#page-scores'),
+			deleteScore = function () {
+				let $delBtn = $(this),
+					url = $delBtn.closest('.card').data('url'),
+					key = $delBtn.data('key'),
+					sure = confirm('Are you sure you want to delete this score?');
+				console.debug(key);
+				if (!sure) {
+					return false;
+				}
+				cbsiamMetrics.sendAjaxRequest(
+					DEL_SCORE_URL,
+					'POST',
+					{
+						'key': key,
+						'url': url
+					}
+				).then((response) => {
+					$delBtn.closest('tr').remove();
+				}).catch((err) => console.error(err));
+			};
 		$pageScores.find('.card').each(function(i, el) {
-			$(el).data('controller',
+			let $el = $(el);
+			$el.data('controller',
 				new cbsiamMetrics.PageScoreController(el));
+			$el.on('click', '.fa-close', deleteScore);
 		});
 	});
 })(jQuery, function ($) {
@@ -24,6 +48,7 @@
 			},
 			this.getPageScore
 		);
+		this.$delBtn = this.$el.find('.fa-close');
 	}
 
 	PageScoreController.prototype = {
@@ -54,16 +79,22 @@
 		},
 		updateDataTable: function (controller, response) {
 			return new Promise((resolve, reject) => {
-				$('#loading-icon').remove();
-				console.debug(response);
+				let dateTime = moment.unix(response.ts)
+					.format('M-D-Y hh:mm:ss A');
 				if (response.status == 0) {
 					let $row = controller.$table.find('tr').
 						first().clone();
-					$row.find('span').first()
+					$row.children().last().children()
+					.first()
 						.html(response.data.speedScore)
 					.end()
 					.last()
-						.html(response.ts)
+						.find('span.dt')
+							.html(dateTime)
+						.end()
+						.find('i.fa-close')
+							.data('key', response.key)
+						.end()
 					.end();
 					$row.show();
 					controller.$table.prepend($row);
@@ -71,6 +102,7 @@
 				} else {
 					reject(response);
 				}
+				$('#loading-icon').remove();
 			});
 		},
 		storeScoreResults: function (url, results) {
