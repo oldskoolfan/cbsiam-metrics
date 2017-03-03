@@ -85,6 +85,7 @@ class DataHelper {
 		try {
 			$this->redis->sRem($url, $key);
 			$this->redis->del($key);
+
 			return [
 				'status' => 0,
 			];

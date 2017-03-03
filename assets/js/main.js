@@ -48,6 +48,7 @@
 			},
 			this.getPageScore
 		);
+		this.gettingScore = false;
 		this.$delBtn = this.$el.find('.fa-close');
 	}
 
@@ -56,6 +57,13 @@
 			let controller = e.data.controller,
 			icon = '<span id="loading-icon"><i class="fa fa-cog ' +
 				'fa-spin fa-lg fa-fw"></i>Getting Pagespeed results...</span>';
+
+			// throttling
+			if (controller.gettingScore) {
+				return false;
+			}
+
+			controller.gettingScore = true;
 
 			// show loading icon
 			controller.$primaryBtn.after(icon);
@@ -70,9 +78,12 @@
 				return controller.storeScoreResults(controller.url, data);
 			})
 			.then((response) => {
+				controller.gettingScore = false;
+
 				return controller.updateDataTable(controller, response);
 			})
 			.catch((err) => {
+				controller.gettingScore = false;
 				$('#loading-icon').remove();
 				console.error(err);
 			});
