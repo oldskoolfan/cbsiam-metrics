@@ -28,7 +28,7 @@ class DataHelper {
 	 * For page init, we get all school urls, and for each url we get all
 	 * scores that have been saved
 	 *
-	 * @return array Array of Page objects
+	 * @return Page[] Array of Page objects
 	 */
 	public function getScoresForLinks() {
 		try {
@@ -47,7 +47,7 @@ class DataHelper {
 				$page = new Page($link);
 				foreach ($keyArray as $key) {
 					array_push($page->scores,
-						$score = new PageScore(
+						new PageScore(
 							$key,
 							$this->redis->hGetAll($key)
 						)
