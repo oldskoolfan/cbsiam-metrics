@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * @api
+ *
+ * Save page score data
+ * Any score data can be sent as key=val post data
+ *
+ * @param string id The url of the school website, to use for key
+ */
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $dataHelper = new CbsiamMetrics\DataHelper();

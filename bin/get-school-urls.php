@@ -1,5 +1,15 @@
 #!/usr/local/bin/php
 <?php
+
+/**
+ * @internal
+ *
+ * this script will:
+ * 1. flush the redis cache
+ * 2. scrape the cbsiam partner site for school urls
+ * 3. load those as keys in redis
+ */
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use CbsiamMetrics\Scraper;
