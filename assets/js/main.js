@@ -111,7 +111,7 @@
 		 * Update the DOM to reflect changes we persisted; i.e. create a new
 		 * page score table row
 		 * @param  {PageScoreController} 	controller
-		 * @param  {object} response		response from save api
+		 * @param  {object} 				response	response from save api
 		 * @return {Promise}
 		 */
 		updateDataTable: function (controller, response) {
