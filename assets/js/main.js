@@ -73,7 +73,7 @@
 		 */
 		getPageScore: function (e) {
 			let controller = e.data.controller,
-			icon = '<span id="loading-icon"><i class="fa fa-cog ' +
+			icon = '<span class="loading-icon"><i class="fa fa-cog ' +
 				'fa-spin fa-lg fa-fw"></i>Getting Pagespeed results...</span>';
 
 			// throttling
@@ -102,7 +102,7 @@
 			})
 			.catch((err) => {
 				controller.gettingScore = false;
-				$('#loading-icon').remove();
+				controller.$el.find('.loading-icon').remove();
 				console.error(err);
 			});
 		},
@@ -139,7 +139,7 @@
 				} else {
 					reject(response);
 				}
-				$('#loading-icon').remove();
+				controller.$el.find('.loading-icon').remove();
 			});
 		},
 
