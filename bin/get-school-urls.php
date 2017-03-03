@@ -18,6 +18,9 @@ try {
 		}
 	);
 
+	// flush database
+	$dataHelper->redis->flushDb();
+
 	foreach ($linkElements as $link) {
 		$num = $dataHelper->redis->sAdd('schoolUrls', $link);
 	}
