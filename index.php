@@ -34,6 +34,9 @@
 	<!-- momentjs -->
 	<script src="https://cdn.jsdelivr.net/momentjs/2.17.1/moment-with-locales.min.js"></script>
 
+	<!-- mustachejs -->
+	<script src="https://cdn.jsdelivr.net/mustache.js/2.3.0/mustache.min.js"></script>
+
 	<script src="/assets/js/ajax-util.js"></script>
 	<script src="/assets/js/main.js"></script>
 </body>

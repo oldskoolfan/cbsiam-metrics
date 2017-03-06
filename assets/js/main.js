@@ -8,6 +8,14 @@
 	window.cbsiamMetrics = window.cbsiamMetrics || {};
 	$.extend(window.cbsiamMetrics, factory($));
 
+	// load mustache template
+	$.get('/assets/templates/page-score.mustache')
+	.done((template) => {
+		cbsiamMetrics.scores = template;
+		Mustache.parse(cbsiamMetrics.scores);
+	})
+	.fail((err) => console.error(err));
+
 	/**
 	 * jQuery document.ready function - init pageScoreControllers and delete
 	 * button event handlers
@@ -33,7 +41,12 @@
 						'url': url
 					}
 				).then((response) => {
-					$delBtn.closest('tr').remove();
+					// update count
+					let $cardBlock = $delBtn.closest('div.card-block'),
+						scoreCount = $cardBlock.data('scores');
+					$cardBlock.data('scores', scoreCount - 1);
+
+					$delBtn.closest('div.page-score').remove();
 				}).catch((err) => console.error(err));
 			};
 		$pageScores.find('.card').each(function(i, el) {
@@ -53,7 +66,7 @@
 	 */
 	function PageScoreController(el) {
 		this.$el = $(el);
-		this.$table = this.$el.find('table');
+		this.$cardBlock = this.$el.find('div.card-block');
 		this.url = this.$el.data('url');
 		this.$primaryBtn = this.$el.find('.btn-primary');
 		this.$primaryBtn.bind('click', {
@@ -62,7 +75,6 @@
 			this.getPageScore
 		);
 		this.gettingScore = false;
-		this.$delBtn = this.$el.find('.fa-close');
 	}
 
 	PageScoreController.prototype = {
@@ -116,30 +128,39 @@
 		 */
 		updateDataTable: function (controller, response) {
 			return new Promise((resolve, reject) => {
-				let dateTime = moment.unix(response.ts)
-					.format('M-D-Y hh:mm:ss A');
-				if (response.status == 0) {
-					let $row = controller.$table.find('tr').
-						first().clone();
-					$row.children().last().children()
-					.first()
-						.html(response.data.speedScore)
-					.end()
-					.last()
-						.find('span.dt')
-							.html(dateTime)
-						.end()
-						.find('i.fa-close')
-							.data('key', response.key)
-						.end()
-					.end();
-					$row.show();
-					controller.$table.prepend($row);
-					resolve();
-				} else {
+				controller.$el.find('.loading-icon').remove();
+
+				if (response.status !== 0) {
 					reject(response);
 				}
-				controller.$el.find('.loading-icon').remove();
+
+				let dateTime = moment.unix(response.ts).format('M-D-Y hh:mm:ss A'),
+				cardId = controller.$cardBlock.data('id'),
+				scoreId = controller.$cardBlock.data('scores'),
+				rowId = '' + cardId + scoreId,
+				scores = ((data) => {
+					let scores = [];
+					for (let key in data) {
+						scores.push({ 'key': key, 'val': data[key] });
+					}
+
+					return scores;
+				})(response.data),
+				row = Mustache.render(cbsiamMetrics.scores, {
+					rowId: rowId,
+					cardId: cardId,
+					dateTime: dateTime,
+					urlKey: response.key,
+					speedScore: response.speedScore,
+					scores: scores
+				});
+
+				// update count
+				controller.$cardBlock.data('scores', scoreId + 1);
+
+				// add to card block
+				controller.$cardBlock.prepend(row);
+				resolve();
 			});
 		},
 
@@ -156,6 +177,10 @@
 				id: url,
 				speedScore: speedScore
 			};
+
+			for (let key in results.pageStats) {
+				postData[key] = results.pageStats[key];
+			}
 
 			return cbsiamMetrics.sendAjaxRequest(
 				SAVE_SCORE_URL,
