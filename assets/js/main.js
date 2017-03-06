@@ -95,11 +95,11 @@
 			.then((data) => {
 				return controller.storeScoreResults(controller.url, data);
 			})
-			.then((response) => {
-				controller.gettingScore = false;
-
-				return controller.updateDataTable(controller, response);
-			})
+			// .then((response) => {
+			// 	controller.gettingScore = false;
+			//
+			// 	return controller.updateDataTable(controller, response);
+			// })
 			.catch((err) => {
 				controller.gettingScore = false;
 				controller.$el.find('.loading-icon').remove();
@@ -156,6 +156,10 @@
 				id: url,
 				speedScore: speedScore
 			};
+
+			for (let key in results.pageStats) {
+				postData[key] = results.pageStats[key];
+			}
 
 			return cbsiamMetrics.sendAjaxRequest(
 				SAVE_SCORE_URL,

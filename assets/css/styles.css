@@ -2,11 +2,52 @@ body {
 	padding: 2em 0;
 }
 
-table td:last-child > span:last-of-type {
-	float: right;
+.card-block .btn-primary {
+	margin: 1em 0 0;
+}
+
+.page-score {
+	border: 1px solid rgba(0,0,0,.125);
+	border-bottom: none;
+}
+
+.page-score > .d-flex {
+	position: relative;
+	background-color: #f7f7f9;
+	border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.page-score .d-flex.score-data {
+	border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.card-block .d-flex > div {
+	padding: 5px;
+	flex: 1 1 100%;
+}
+
+.card-block .d-flex > div:not(:first-child) {
+	border-left: 1px solid rgba(0,0,0,.125);
+}
+
+.card-block .d-flex.score-data > div {
+	font-size: 0.9em;
+	font-weight: 500;
+	text-align: right;
+}
+
+.card-block .d-flex.score-data > div:first-child {
+	flex-grow: 2;
+}
+
+.card-block .d-flex.score-data > div:last-child {
+	flex-shrink: 2;
 }
 
 i.fa-close {
+	position: absolute;
+	right: 5px;
+	top: 10px;
 	color: darkred;
 	cursor: pointer;
 }
