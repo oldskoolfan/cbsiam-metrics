@@ -98,6 +98,7 @@ class DataHelper {
 				'ts' => $pageScore->getTimestamp(),
 				'status' => 0,
 				'data' => $pageScore->data,
+				'speedScore' => $pageScore->speedScore,
 			];
 		} catch (\Exception $ex) {
 			return $this->getErrorStatus($ex);

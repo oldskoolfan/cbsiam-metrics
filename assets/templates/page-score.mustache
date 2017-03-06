@@ -1,0 +1,26 @@
+<div class="page-score">
+	<div class="d-flex">
+		<div id="heading-score-{{rowId}}" role="tab">
+			<a href="#collapse-score-{{rowId}}" class="collapsed" data-parent="card-block-{{cardId}}" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-score-{{rowId}}">
+				Score (out of 100)
+			</a>
+		</div>
+		<div class="score">{{speedScore}}</div>
+		<div>
+			<span class="dt">{{dateTime}}</span>
+			<i data-key="{{urlKey}}" class="fa fa-close fa-lg"></i>
+		</div>
+	</div>
+	<div id="collapse-score-{{rowId}}" class="collapse data-table" role="tabpanel" aria-labelledby="heading-score-{{rowId}}">
+		{{#scores}}
+			<div class="d-flex score-data">
+				<div>{{key}}</div><div>{{val}}</div>
+			</div>
+		{{/scores}}
+		{{^scores}}
+			<div class="d-flex score-data">
+				<div>No additional score data</div>
+			</div>
+		{{/scores}}
+	</div>
+</div>

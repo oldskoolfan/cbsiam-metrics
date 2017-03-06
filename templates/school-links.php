@@ -13,7 +13,7 @@ $pageScores = $dataHelper->getScoresForLinks();
 		</a>
 	</h5>
 	<div id="collapse<?= $i ?>" class="collapse" role="tabpanel" aria-labelledby="heading<?= $i ?>">
-		<div id="card-block-<?= $i ?>" class="card-block" role="tablist">
+		<div id="card-block-<?= $i ?>" class="card-block" role="tablist" data-id="<?= $i ?>" data-scores="<?= count($pageScore->scores) ?>">
 			<?php if (count($pageScore->scores) > 0): ?>
 				<?php foreach($pageScore->scores as $j => $score): ?>
 				<div class="page-score">
@@ -23,31 +23,33 @@ $pageScores = $dataHelper->getScoresForLinks();
 								Score (out of 100)
 							</a>
 						</div>
-						<div><?= $score->speedScore ?></div>
+						<div class="score"><?= $score->speedScore ?></div>
 						<div>
 							<span class="dt"><?= date('n-j-Y h:i:s A', $score->getTimestamp()) ?></span>
 							<i data-key="<?= $score->urlKey ?>" class="fa fa-close fa-lg"></i>
 						</div>
 					</div>
-					<div id="collapse-score-<?= $i . $j ?>" class="collapse" role="tabpanel" aria-labelledby="heading-score-<?= $i . $j ?>">
+					<div id="collapse-score-<?= $i . $j ?>" class="collapse data-table" role="tabpanel" aria-labelledby="heading-score-<?= $i . $j ?>">
 						<?php include "page-scores.php" ?>
 					</div>
 				</div>
 				<?php endforeach;?>
 			<?php else: ?>
-				<div class="page-score">
-					<table class="table table-bordered table-fixed" style="display:none;">
-						<tr>
-							<td>Score (out of 100)</td>
-							<td></td>
-							<td>
-								<span class="dt"></span>
-								<i class="fa fa-close fa-lg"></i>
-							</td>
-						</tr>
-					</table>
-					<table class="collapse" role="tabpanel">
-					</table>
+				<div class="page-score" style="display:none">
+					<div class="d-flex">
+						<div role="tab">
+							<a href="#" class="collapsed" data-toggle="collapse" aria-expanded="false">
+								Score (out of 100)
+							</a>
+						</div>
+						<div class="score"></div>
+						<div>
+							<span class="dt"></span>
+							<i class="fa fa-close fa-lg"></i>
+						</div>
+					</div>
+					<div class="collapse" role="tabpanel">
+					</div>
 				</div>
 			<?php endif; ?>
 			<button class="btn btn-primary">Get Latest Pagespeed Results</button>
