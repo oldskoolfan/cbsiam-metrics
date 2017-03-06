@@ -34,23 +34,6 @@ $pageScores = $dataHelper->getScoresForLinks();
 					</div>
 				</div>
 				<?php endforeach;?>
-			<?php else: ?>
-				<div class="page-score" style="display:none">
-					<div class="d-flex">
-						<div role="tab">
-							<a href="#" class="collapsed" data-toggle="collapse" aria-expanded="false">
-								Score (out of 100)
-							</a>
-						</div>
-						<div class="score"></div>
-						<div>
-							<span class="dt"></span>
-							<i class="fa fa-close fa-lg"></i>
-						</div>
-					</div>
-					<div class="collapse" role="tabpanel">
-					</div>
-				</div>
 			<?php endif; ?>
 			<button class="btn btn-primary">Get Latest Pagespeed Results</button>
 		</div>
