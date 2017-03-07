@@ -2,6 +2,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 $dataHelper = new CbsiamMetrics\DataHelper();
+$viewHelper = new CbsiamMetrics\ViewHelper();
 $pageScores = $dataHelper->getScoresForLinks();
 ?>
 <ul id="accordion" role="tablist">
@@ -14,27 +15,28 @@ $pageScores = $dataHelper->getScoresForLinks();
 	</h5>
 	<div id="collapse<?= $i ?>" class="collapse" role="tabpanel" aria-labelledby="heading<?= $i ?>">
 		<div id="card-block-<?= $i ?>" class="card-block" role="tablist" data-id="<?= $i ?>" data-scores="<?= count($pageScore->scores) ?>">
-			<?php if (count($pageScore->scores) > 0): ?>
-				<?php foreach($pageScore->scores as $j => $score): ?>
-				<div class="page-score">
-					<div class="d-flex">
-						<div id="heading-score-<?= $i . $j ?>" role="tab">
-							<a href="#collapse-score-<?= $i . $j ?>" class="collapsed" data-parent="card-block-<?= $i ?>" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-score-<?= $i. $j ?>">
-								Score (out of 100)
-							</a>
-						</div>
-						<div class="score"><?= $score->speedScore ?></div>
-						<div>
-							<span class="dt"><?= date('n-j-Y h:i:s A', $score->getTimestamp()) ?></span>
-							<i data-key="<?= $score->urlKey ?>" class="fa fa-close fa-lg"></i>
-						</div>
-					</div>
-					<div id="collapse-score-<?= $i . $j ?>" class="collapse data-table" role="tabpanel" aria-labelledby="heading-score-<?= $i . $j ?>">
-						<?php include "page-scores.php" ?>
-					</div>
-				</div>
-				<?php endforeach;?>
-			<?php endif; ?>
+			<?php
+				if (count($pageScore->scores) > 0) {
+					foreach ($pageScore->scores as $j => $score) {
+						$scores = [];
+						if (count($score->data) > 0) {
+							foreach($score->data as $key => $val) {
+								array_push($scores, [
+									'key' => $key,
+									'val' => $val,
+								]);
+							}
+						}
+						echo $viewHelper->render('page-score', [
+							'rowId' => $i . $j,
+							'cardId' => $i,
+							'speedScore' => $score->speedScore,
+							'dateTime' => date('n-j-Y h:i:s A', $score->getTimestamp()),
+							'scores' => $scores,
+						]);
+					}
+				}
+			?>
 			<button class="btn btn-primary">Get Latest Pagespeed Results</button>
 		</div>
 	</div>

@@ -6,7 +6,8 @@
         "php": "^7.0",
         "predis/predis": "^1.1",
         "fabpot/goutte": "^3.2",
-        "google/apiclient": "^2.1"
+        "google/apiclient": "^2.1",
+        "mustache/mustache": "^2.11"
 
     },
     "require-dev": {
