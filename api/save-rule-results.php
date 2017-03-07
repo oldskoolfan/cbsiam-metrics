@@ -17,7 +17,7 @@ $ruleData = [];
 
 foreach ($_POST as $key => $val) {
 	if ($key === 'id') {
-		$id = PageRuleCollection::getRuleKeyFromScoreKey($val);
+		$id = $val;
 	} else {
 		$ruleData[$key] = $val;
 	}

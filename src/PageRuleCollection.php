@@ -26,6 +26,11 @@ class PageRuleCollection {
 	public $id;
 
 	/**
+	 * @var string
+	 */
+	public $scoreKey;
+
+	/**
 	 * @var PageRule[]
 	 */
 	public $rules = [];
@@ -35,7 +40,8 @@ class PageRuleCollection {
 	 * @param array  $data
 	 */
 	public function __construct(string $id, array $data) {
-		$this->id = $id;
+		$this->scoreKey = $id;
+		$this->id = self::getRuleKeyFromScoreKey($id);
 		foreach ($data as $key => $val) {
 			$this->parseData($key, $val);
 		}
@@ -85,7 +91,7 @@ class PageRuleCollection {
 			$rule->name = $ruleName;
 		}
 		if ($ruleImpact !== null) {
-			$rule->impact = (int)$ruleImpact;
+			$rule->impact = (float)$ruleImpact;
 		}
 		$this->rules[$ruleKey] = $rule;
 	}

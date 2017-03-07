@@ -150,13 +150,23 @@
 
 					return scores;
 				})(response.data),
+				rules = ((data) => {
+					let rules = [],
+						rule;
+					for (let key in data) {
+						rules.push(data[key]);
+					}
+
+					return rules;
+				})(response.rules),
 				row = Mustache.render(cbsiamMetrics.scores, {
 					rowId: rowId,
 					cardId: cardId,
 					dateTime: dateTime,
 					urlKey: response.key,
 					speedScore: response.speedScore,
-					scores: scores
+					scores: scores,
+					rules: rules
 				});
 
 				// update count

@@ -54,15 +54,16 @@ class DataHelper {
 					);
 				}
 				// sort scores by timestamp desc
-				$sortScores = static function($a, $b) {
+				$sortScoresDesc = static function($a, $b) {
 					$tsA = $a->getTimestamp();
 					$tsB = $b->getTimestamp();
 					if ($tsA === $tsB) {
 						return 0;
 					}
+
 					return $tsA < $tsB ? 1 : -1;
 				};
-				usort($page->scores, $sortScores);
+				usort($page->scores, $sortScoresDesc);
 				array_push($pages, $page);
 			}
 
@@ -70,6 +71,28 @@ class DataHelper {
 		} catch (\Exception $ex) {
 			return false;
 		}
+	}
+
+	public function getPageRuleResults($scoreKey) {
+		$rules = [];
+		$ruleId = PageRuleCollection::getRuleKeyFromScoreKey($scoreKey);
+		$ruleKeys = $this->redis->sMembers($ruleId);
+		foreach ($ruleKeys as $key) {
+			$rules[$key] = $this->redis->hGetAll($key);
+		}
+
+		$sortRulesDesc = static function ($a, $b) {
+			$impactA = $a['impact'];
+			$impactB = $b['impact'];
+			if ($impactA === $impactB) {
+				return 0;
+			}
+
+			return $impactA < $impactB ? 1 : -1;
+		};
+		usort($rules, $sortRulesDesc);
+
+		return $rules;
 	}
 
 	/**
@@ -127,14 +150,10 @@ class DataHelper {
 					$rule->impact
 				);
 			}
-			$rules = [];
-			$ruleKeys = $this->redis->sMembers($ruleCollection->id);
-			foreach ($ruleKeys as $key) {
-				$rules[$key] = $this->redis->hGetAll($key);
-			}
+			
 			return [
 				'status' => 0,
-				'rules' => $rules,
+				'rules' => $this->getPageRuleResults($ruleCollection->scoreKey),
 			];
 		} catch (\Exception $ex) {
 			return $this->getErrorStatus($ex);
