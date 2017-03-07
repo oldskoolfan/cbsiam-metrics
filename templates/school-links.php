@@ -18,6 +18,7 @@ $pageScores = $dataHelper->getScoresForLinks();
 			<?php
 				if (count($pageScore->scores) > 0) {
 					foreach ($pageScore->scores as $j => $score) {
+						$rules = $dataHelper->getPageRuleResults($score->urlKey);
 						$scores = [];
 						if (count($score->data) > 0) {
 							foreach($score->data as $key => $val) {
@@ -28,16 +29,20 @@ $pageScores = $dataHelper->getScoresForLinks();
 							}
 						}
 						echo $viewHelper->render('page-score', [
+							'urlKey' => $score->urlKey,
 							'rowId' => $i . $j,
 							'cardId' => $i,
 							'speedScore' => $score->speedScore,
 							'dateTime' => date('n-j-Y h:i:s A', $score->getTimestamp()),
 							'scores' => $scores,
+							'rules' => $rules,
 						]);
 					}
 				}
 			?>
-			<button class="btn btn-primary">Get Latest Pagespeed Results</button>
+			<div class="controls">
+				<button class="btn btn-primary">Get Latest Pagespeed Results</button>
+			</div>
 		</div>
 	</div>
 </div>

@@ -12,6 +12,17 @@
 		</div>
 	</div>
 	<div id="collapse-score-{{rowId}}" class="collapse data-table" role="tabpanel" aria-labelledby="heading-score-{{rowId}}">
+		<h5>Rule Results</h5>
+		<div class="d-flex score-data">
+			<div><strong>NAME</strong></div>
+			<div><strong>IMPACT</strong></div>
+		</div>
+		{{#rules}}
+		<div class="d-flex score-data">
+			<div>{{name}}</div><div>{{impact}}</div>
+		</div>
+		{{/rules}}
+		<h5>Page Stats</h5>
 		{{#scores}}
 			<div class="d-flex score-data">
 				<div>{{key}}</div><div>{{val}}</div>

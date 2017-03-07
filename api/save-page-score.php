@@ -13,19 +13,20 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $dataHelper = new CbsiamMetrics\DataHelper();
 
+$id = null;
 $url = null;
 $scoreData = [];
 foreach ($_POST as $key => $val) {
-	if ($key === 'id') {
-		$url = $val;
-	} else {
-		$scoreData[$key] = $val;
+	switch ($key) {
+		case 'id':
+			$id = $val;
+			break;
+		case 'url':
+			$url = $val;
+			break;
+		default:
+			$scoreData[$key] = $val;
 	}
-}
-
-if ($url !== null && count($scoreData) > 0) {
-	// we have key and values, add timestamp
-	$id = $url . ':' . time();
 }
 
 $data = $dataHelper->savePageScoreData($url, $id, $scoreData);
