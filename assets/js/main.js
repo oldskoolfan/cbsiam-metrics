@@ -59,6 +59,7 @@
 })(jQuery, function ($) {
 	const PAGESPEED_URL = 'https://www.googleapis.com/pagespeedonline/v2/runPagespeed';
 	const SAVE_SCORE_URL = '/api/save-page-score.php';
+	const SAVE_RULES_URL = '/api/save-rule-results.php';
 
 	/**
 	 * @class
@@ -108,9 +109,9 @@
 				return controller.storeScoreResults(controller.url, data);
 			})
 			.then((response) => {
+				let scoreResponse = response[0];
 				controller.gettingScore = false;
-
-				return controller.updateDataTable(controller, response);
+				return controller.updateDataTable(controller, scoreResponse);
 			})
 			.catch((err) => {
 				controller.gettingScore = false;
@@ -173,20 +174,41 @@
 		storeScoreResults: function (url, results) {
 			let json = results,
 			speedScore = json.ruleGroups.SPEED.score,
-			postData = {
-				id: url,
+			id = url + ':' + Math.floor(Date.now() / 1000),
+			scoreData = {
+				id: id,
+				url: url,
 				speedScore: speedScore
-			};
+			},
+			ruleData = {
+				id: id
+			},
+			rule;
 
+			// get score data
 			for (let key in results.pageStats) {
-				postData[key] = results.pageStats[key];
+				scoreData[key] = results.pageStats[key];
 			}
 
-			return cbsiamMetrics.sendAjaxRequest(
-				SAVE_SCORE_URL,
-				'POST',
-				postData
-			);
+			// get rule data
+			for (let key in results.formattedResults.ruleResults) {
+				rule = results.formattedResults.ruleResults[key];
+				ruleData[key + ':name'] = rule.localizedRuleName;
+				ruleData[key + ':impact'] = rule.ruleImpact;
+			}
+
+			return Promise.all([
+				cbsiamMetrics.sendAjaxRequest(
+					SAVE_SCORE_URL,
+					'POST',
+					scoreData
+				),
+				cbsiamMetrics.sendAjaxRequest(
+					SAVE_RULES_URL,
+					'POST',
+					ruleData
+				)
+			]);
 		}
 	};
 

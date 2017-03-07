@@ -79,7 +79,7 @@ class DataHelper {
 	 * @param  array $scoreData 	Array of score data
 	 * @return array            	Status of save operation
 	 */
-	public function savePageScoreData($url, $id, $scoreData) {
+	public function savePageScoreData($url, $id, array $scoreData) {
 		try {
 			// save new url id
 			$this->redis->sAdd($url, $id);
@@ -105,16 +105,48 @@ class DataHelper {
 		}
 	}
 
+	public function savePageRuleData(PageRuleCollection $ruleCollection) {
+		try {
+			foreach ($ruleCollection->rules as $rule) {
+				$this->redis->sAdd($ruleCollection->id, $rule->key);
+				$this->redis->hSet(
+					$rule->key,
+					PageRuleCollection::NAME,
+					$rule->name
+				);
+				$this->redis->hSet(
+					$rule->key,
+					PageRuleCollection::IMPACT,
+					$rule->impact
+				);
+			}
+			$rules = [];
+			$ruleKeys = $this->redis->sMembers($ruleCollection->id);
+			foreach ($ruleKeys as $key) {
+				$rules[$key] = $this->redis->hGetAll($key);
+			}
+			return $rules;
+		} catch (\Exception $ex) {
+			return $this->getErrorStatus($ex);
+		}
+	}
+
 	/**
 	 * Delete page score for key. Also delete key under url
 	 * @param  string $url 	School url
 	 * @param  string $key 	Key for score
 	 * @return Array 		Status of delete operation
 	 */
-	public function deleteScore($url, $key) {
+	public function deleteScore($url, $scoreKey) {
 		try {
-			$this->redis->sRem($url, $key);
-			$this->redis->del($key);
+			$ruleId = PageRuleCollection::getRuleKeyFromScoreKey($scoreKey);
+			$ruleKeys = $this->redis->sMembers($ruleId);
+			foreach($ruleKeys as $ruleKey) {
+				$this->redis->del($ruleKey);
+			}
+			$this->redis->del($ruleId);
+			$this->redis->sRem($url, $scoreKey);
+			$this->redis->del($scoreKey);
 
 			return [
 				'status' => 0,
@@ -132,7 +164,7 @@ class DataHelper {
 	private function getErrorStatus($ex) {
 		return [
 			'status' => 1,
-			'error' => $ex->getMessage(),
+			'error' => $ex->getTrace(),
 		];
 	}
 }
