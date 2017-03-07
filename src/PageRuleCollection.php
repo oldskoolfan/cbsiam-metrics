@@ -19,10 +19,21 @@ class PageRuleCollection {
 	 */
 	const RULE_NAMESPACE = 'rules';
 
+	/**
+	 * parent key for all page rules
+	 * @var string
+	 */
 	public $id;
 
+	/**
+	 * @var PageRule[]
+	 */
 	public $rules = [];
 
+	/**
+	 * @param string $id
+	 * @param array  $data
+	 */
 	public function __construct(string $id, array $data) {
 		$this->id = $id;
 		foreach ($data as $key => $val) {
@@ -30,10 +41,22 @@ class PageRuleCollection {
 		}
 	}
 
+	/**
+	 * simple function to tack on rule namespace to
+	 * a score id
+	 * @param  string $scoreKey
+	 * @return string
+	 */
 	public static function getRuleKeyFromScoreKey(string $scoreKey) {
 		return $scoreKey .= ':' . self::RULE_NAMESPACE;
 	}
 
+	/**
+	 * create array of page rule objects from posted data
+	 * @param  string $key Namespaced key
+	 * @param  string $val
+	 * @return void
+	 */
 	private function parseData(string $key, string $val) {
 		$ruleKey = null;
 		$ruleName = null;

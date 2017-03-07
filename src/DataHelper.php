@@ -105,6 +105,11 @@ class DataHelper {
 		}
 	}
 
+	/**
+	 * persist collection of page rules to redis
+	 * @param  PageRuleCollection $ruleCollection
+	 * @return array
+	 */
 	public function savePageRuleData(PageRuleCollection $ruleCollection) {
 		try {
 			foreach ($ruleCollection->rules as $rule) {
@@ -132,9 +137,10 @@ class DataHelper {
 	}
 
 	/**
-	 * Delete page score for key. Also delete key under url
+	 * Delete page score for key.
+	 * Also delete key under url and associated rule data.
 	 * @param  string $url 	School url
-	 * @param  string $key 	Key for score
+	 * @param  string $scoreKey 	Key for score
 	 * @return Array 		Status of delete operation
 	 */
 	public function deleteScore($url, $scoreKey) {
