@@ -55,10 +55,12 @@ class DataHelper {
 				}
 				// sort scores by timestamp desc
 				$sortScores = static function($a, $b) {
-					if ($a === $b) {
+					$tsA = $a->getTimestamp();
+					$tsB = $b->getTimestamp();
+					if ($tsA === $tsB) {
 						return 0;
 					}
-					return $a < $b ? 1 : -1;
+					return $tsA < $tsB ? 1 : -1;
 				};
 				usort($page->scores, $sortScores);
 				array_push($pages, $page);
@@ -130,7 +132,10 @@ class DataHelper {
 			foreach ($ruleKeys as $key) {
 				$rules[$key] = $this->redis->hGetAll($key);
 			}
-			return $rules;
+			return [
+				'status' => 0,
+				'rules' => $rules,
+			];
 		} catch (\Exception $ex) {
 			return $this->getErrorStatus($ex);
 		}

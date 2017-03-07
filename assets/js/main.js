@@ -109,9 +109,8 @@
 				return controller.storeScoreResults(controller.url, data);
 			})
 			.then((response) => {
-				let scoreResponse = response[0];
 				controller.gettingScore = false;
-				return controller.updateDataTable(controller, scoreResponse);
+				return controller.updateDataTable(controller, response);
 			})
 			.catch((err) => {
 				controller.gettingScore = false;
@@ -127,8 +126,12 @@
 		 * @param  {object} 				response	response from save api
 		 * @return {Promise}
 		 */
-		updateDataTable: function (controller, response) {
+		updateDataTable: function (controller, allResponse) {
 			return new Promise((resolve, reject) => {
+				let scoreResponse = allResponse[0],
+				ruleResponse = allResponse[1],
+				response = $.extend({}, scoreResponse, ruleResponse);
+
 				controller.$el.find('.loading-icon').remove();
 
 				if (response.status !== 0) {
