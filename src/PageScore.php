@@ -32,10 +32,8 @@ class PageScore {
 		unset($data['speedScore']);
 
 		foreach ($data as $key => $val) {
-			if (preg_match_all('/^([a-z]+)|([A-Z][a-z]+)/', $key, $matches)) {
-				$scoreKey = strtolower(implode($matches[0], ' '));
-				$scoreData[$scoreKey] = $val;
-			}
+			$scoreKey = $this->splitCamelCaseScoreKey($key);
+			$scoreData[$scoreKey] = $val;
 		}
 
 		$this->data = $scoreData;
@@ -44,10 +42,23 @@ class PageScore {
 
 	/**
 	 * get timestamp from key
-	 * @return string
+	 * @return int
 	 */
 	public function getTimestamp() {
 		$urlKey = explode(':', $this->urlKey);
-		return array_pop($urlKey);
+		return (int)array_pop($urlKey);
+	}
+
+	/**
+	 * split a camelCase score key into camel case
+	 * @param  string $key
+	 * @return string
+	 */
+	private function splitCamelCaseScoreKey($key) {
+		if (preg_match_all('/^([a-z]+)|([A-Z][a-z]+)/', $key, $matches)) {
+			return strtolower(implode($matches[0], ' '));
+		}
+
+		return $key;
 	}
 }
