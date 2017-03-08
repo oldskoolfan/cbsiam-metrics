@@ -78,14 +78,12 @@ class DataHelper {
 		$ruleId = PageRuleCollection::getRuleKeyFromScoreKey($scoreKey);
 		$ruleKeys = $this->redis->sMembers($ruleId);
 		foreach ($ruleKeys as $key) {
-			$rules[$key] = $this->redis->hGetAll($key);
-			$rules[$key]['colorClass'] =
-				$this->getScoreColorClass($rules[$key]['impact']);
+			$rules[$key] = new PageRule($key, $this->redis->hGetAll($key));
 		}
 
 		$sortRulesDesc = static function ($a, $b) {
-			$impactA = $a['impact'];
-			$impactB = $b['impact'];
+			$impactA = $a->impact;
+			$impactB = $b->impact;
 			if ($impactA === $impactB) {
 				return 0;
 			}
@@ -186,17 +184,6 @@ class DataHelper {
 		} catch (\Exception $ex) {
 			return $this->getErrorStatus($ex);
 		}
-	}
-
-	private function getScoreColorClass(float $score) {
-		if ($score > 10) {
-			return 'bg-danger';
-		}
-		if ($score > 0) {
-			return 'bg-warning';
-		}
-
-		return 'bg-success';
 	}
 
 	/**

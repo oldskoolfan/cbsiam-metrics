@@ -11,7 +11,7 @@ $pageScores = $dataHelper->getScoresForLinks();
 	<div data-url="<?= $pageScore->url ?>" class="card">
 		<h5 id="heading<?= $i ?>" class="card-header" role="tab">
 			<a href="#collapse<?= $i ?>" class="collapsed" data-parent="accordion" data-toggle="collapse" aria-expanded="false" aria-controls="collapse<?= $i ?>">
-				<?= $pageScore->url ?>
+				<?= $pageScore->getDisplayUrl() ?>
 			</a>
 		</h5>
 		<div id="collapse<?= $i ?>" class="collapse" role="tabpanel" aria-labelledby="heading<?= $i ?>">

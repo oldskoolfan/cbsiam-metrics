@@ -1,5 +1,10 @@
+
 body {
-	padding: 2em 0;
+	padding: 5em 0;
+}
+
+ul#accordion {
+	padding: 0;
 }
 
 div.controls {
@@ -64,4 +69,18 @@ i.fa-close {
 	top: 10px;
 	color: darkred;
 	cursor: pointer;
+}
+
+a#github-link:hover {
+	text-decoration: none;
+}
+
+a#github-link:hover span {
+	text-decoration: underline;
+}
+
+@media(max-width: 575px) {
+	h5.card-header {
+		font-size: 1em;
+	}
 }
