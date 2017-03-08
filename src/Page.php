@@ -23,4 +23,8 @@ class Page {
 		$this->url = $url;
 		$this->scores = $scores;
 	}
+
+	public function getDisplayUrl() {
+		return preg_replace('/(^http:\/\/www\.)|(\/$)/', '', $this->url);
+	}
 }
