@@ -42,7 +42,7 @@ class PageScore {
 
 	/**
 	 * get timestamp from key
-	 * @return string
+	 * @return int
 	 */
 	public function getTimestamp() {
 		$urlKey = explode(':', $this->urlKey);
