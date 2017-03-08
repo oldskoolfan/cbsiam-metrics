@@ -25,10 +25,8 @@ class PageRule {
 	public $colorClass;
 
 	/**
-	 * @param string $key
-	 * @param string $name
-	 * @param int $impact
-	 * @param string $class
+	 * @param string 	$key
+	 * @param array 	$vals Optional array of other attributes
 	 */
 	public function __construct($key, array $vals = []) {
 		$impact = isset($vals['impact']) ? (float) $vals['impact'] : null;
@@ -44,6 +42,10 @@ class PageRule {
 		$this->impact = $impact;
 	}
 
+	/**
+	 * @param  float  $impact
+	 * @return string
+	 */
 	private function getRuleColorClass(float $impact) {
 		if ($impact > 10) {
 			return 'bg-danger';
