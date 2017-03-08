@@ -79,6 +79,8 @@ class DataHelper {
 		$ruleKeys = $this->redis->sMembers($ruleId);
 		foreach ($ruleKeys as $key) {
 			$rules[$key] = $this->redis->hGetAll($key);
+			$rules[$key]['colorClass'] =
+				$this->getScoreColorClass($rules[$key]['impact']);
 		}
 
 		$sortRulesDesc = static function ($a, $b) {
@@ -150,7 +152,7 @@ class DataHelper {
 					$rule->impact
 				);
 			}
-			
+
 			return [
 				'status' => 0,
 				'rules' => $this->getPageRuleResults($ruleCollection->scoreKey),
@@ -184,6 +186,17 @@ class DataHelper {
 		} catch (\Exception $ex) {
 			return $this->getErrorStatus($ex);
 		}
+	}
+
+	private function getScoreColorClass(float $score) {
+		if ($score > 10) {
+			return 'bg-danger';
+		}
+		if ($score > 0) {
+			return 'bg-warning';
+		}
+
+		return 'bg-success';
 	}
 
 	/**
