@@ -24,6 +24,11 @@ class Page {
 		$this->scores = $scores;
 	}
 
+	/**
+	 * remove http://www. and trailing slashes when displaying
+	 * school urls
+	 * @return string
+	 */
 	public function getDisplayUrl() {
 		return preg_replace('/(^http:\/\/www\.)|(\/$)/', '', $this->url);
 	}
