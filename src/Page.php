@@ -30,6 +30,10 @@ class Page {
 	 * @return string
 	 */
 	public function getDisplayUrl() {
-		return preg_replace('/(^http:\/\/www\.)|(\/$)/', '', $this->url);
+		return preg_replace(
+			'/(^(http:)*\/\/(www\.)*)|(^www\.)|(\/$)/',
+			'',
+			$this->url
+		);
 	}
 }
