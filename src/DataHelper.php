@@ -54,18 +54,24 @@ class DataHelper {
 					);
 				}
 				// sort scores by timestamp desc
-				$sortScoresDesc = static function($a, $b) {
+				$sortScoresDesc = function($a, $b) {
 					$tsA = $a->getTimestamp();
 					$tsB = $b->getTimestamp();
-					if ($tsA === $tsB) {
-						return 0;
-					}
 
-					return $tsA < $tsB ? 1 : -1;
+					return $this->sort($tsA, $tsB, SortDirection::DESC);
 				};
 				usort($page->scores, $sortScoresDesc);
 				array_push($pages, $page);
 			}
+
+			// sort pages alphabetically by url
+			$sortPages = function ($a, $b) {
+				$urlA = $a->getDisplayUrl();
+				$urlB = $b->getDisplayUrl();
+
+				return $this->sort($urlA, $urlB);
+			};
+			usort($pages, $sortPages);
 
 			return $pages;
 		} catch (\Exception $ex) {
@@ -73,6 +79,11 @@ class DataHelper {
 		}
 	}
 
+	/**
+	 * Get rule results for a pagespeed score instance
+	 * @param  string 		$scoreKey
+	 * @return PageRule[]
+	 */
 	public function getPageRuleResults($scoreKey) {
 		$rules = [];
 		$ruleId = PageRuleCollection::getRuleKeyFromScoreKey($scoreKey);
@@ -81,14 +92,11 @@ class DataHelper {
 			$rules[$key] = new PageRule($key, $this->redis->hGetAll($key));
 		}
 
-		$sortRulesDesc = static function ($a, $b) {
+		$sortRulesDesc = function ($a, $b) {
 			$impactA = $a->impact;
 			$impactB = $b->impact;
-			if ($impactA === $impactB) {
-				return 0;
-			}
 
-			return $impactA < $impactB ? 1 : -1;
+			return $this->sort($impactA, $impactB, SortDirection::DESC);
 		};
 		usort($rules, $sortRulesDesc);
 
@@ -184,6 +192,24 @@ class DataHelper {
 		} catch (\Exception $ex) {
 			return $this->getErrorStatus($ex);
 		}
+	}
+
+	/**
+	 * Shared sorting function
+	 * @param  mixed $a
+	 * @param  mixed $b
+	 * @param  SortDirection $dir
+	 * @return int
+	 */
+	private function sort($a, $b, $dir = SortDirection::ASC) {
+		if ($a === $b) {
+			return 0;
+		}
+		if (SortDirection::ASC === $dir) {
+			return $a > $b ? 1 : -1;
+		}
+
+		return $a < $b ? 1 : -1;
 	}
 
 	/**
