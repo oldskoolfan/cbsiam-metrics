@@ -79,6 +79,11 @@ class DataHelper {
 		}
 	}
 
+	/**
+	 * Get rule results for a pagespeed score instance
+	 * @param  string 		$scoreKey
+	 * @return PageRule[]
+	 */
 	public function getPageRuleResults($scoreKey) {
 		$rules = [];
 		$ruleId = PageRuleCollection::getRuleKeyFromScoreKey($scoreKey);
@@ -189,6 +194,13 @@ class DataHelper {
 		}
 	}
 
+	/**
+	 * Shared sorting function
+	 * @param  mixed $a
+	 * @param  mixed $b
+	 * @param  SortDirection $dir
+	 * @return int
+	 */
 	private function sort($a, $b, $dir = SortDirection::ASC) {
 		if ($a === $b) {
 			return 0;
