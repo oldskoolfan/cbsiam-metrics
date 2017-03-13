@@ -8,6 +8,7 @@
  * 1. flush the redis cache
  * 2. scrape the cbsiam partner site for school urls
  * 3. load those as keys in redis
+ * 4. get results from pagespeed api, save to redis
  */
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -21,6 +22,8 @@ use Symfony\Component\DomCrawler\Crawler;
 try {
 	$dataHelper = new DataHelper();
 	$scraper = new Scraper();
+
+	echo "getting school links...\n";
 	$crawler = $scraper->getSchoolListPage();
 
 	$linkElements = $crawler->filter('div.work-link a')->each(
@@ -30,8 +33,10 @@ try {
 	);
 
 	// flush database
+	echo "flushing database...\n";
 	$dataHelper->redis->flushDb();
 
+	echo "saving school links...\n";
 	foreach ($linkElements as $link) {
 		$num = $dataHelper->redis->sAdd('schoolUrls', $link);
 	}
