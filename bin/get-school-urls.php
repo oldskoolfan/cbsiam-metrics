@@ -43,8 +43,9 @@ try {
 
 	$httpHelper = new HttpHelper($linkElements, $dataHelper);
 	$promise = $httpHelper->pool->promise();
+	echo "getting pagespeed results for urls...\n";
 	$promise->wait();
 	echo "\nProcess completed successfully\n";
-} catch (ConnectException $ex) {
-	echo $ex->getMessage();
+} catch (Exception $ex) {
+	echo $ex->getMessage() . "\n";
 }
